@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lexor — Vendemos tempo. Conectamos sua empresa com o futuro.</title>
+<meta name="description" content="A Lexor constrói Sistemas de Crescimento com marketing, IA, sistemas, apps e Google trabalhando juntos. Para empresas que já vendem, mas precisam escalar." />
+<meta property="og:title" content="Lexor — Sistemas de Crescimento" />
+<meta property="og:description" content="Marketing, IA e tecnologia trabalhando como um só sistema." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.0.42/dist/lenis.min.js"></script>
+
+<style>
+  :root {
+    --bg-primary: #0A0A0A;
+    --bg-secondary: #0F0F0F;
+    --bg-elevated: #141414;
+    --bg-card: #161616;
+    --text-primary: #F5F5F5;
+    --text-muted: #8A8A8A;
+    --text-dim: #555555;
+    --accent: #C6F432;
+    --accent-hover: #D4FF4D;
+    --accent-dim: rgba(198, 244, 50, 0.15);
+    --border: #1F1F1F;
+    --border-strong: #2A2A2A;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Geist', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { cursor: none; }
+  @media (pointer: coarse) { body { cursor: auto; } }
+
+  ::selection { background: var(--accent); color: var(--bg-primary); }
+
+  .font-display { font-family: 'Bricolage Grotesque', sans-serif; font-variation-settings: 'opsz' 96, 'wght' 700; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* === Cursor === */
+  .cursor-dot, .cursor-ring {
+    position: fixed; pointer-events: none; z-index: 9999;
+    top: 0; left: 0; transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  }
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(245,245,245,0.3);
+    border-radius: 50%;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring.hover {
+    width: 70px; height: 70px;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  @media (pointer: coarse) { .cursor-dot, .cursor-ring { display: none; } }
+
+  /* === Loader === */
+  .loader {
+    position: fixed; inset: 0; z-index: 10000;
+    background: var(--bg-primary);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .loader-logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 800;
+    font-size: clamp(60px, 12vw, 160px);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    overflow: hidden;
+  }
+  .loader-logo span {
+    display: inline-block;
+    transform: translateY(110%);
+  }
+  .loader-meta {
+    position: absolute; bottom: 40px; right: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    display: flex; gap: 16px;
+  }
+  .loader-bar {
+    position: absolute; bottom: 0; left: 0;
+    height: 1px; background: var(--accent);
+    width: 0%;
+  }
+
+  /* === Mask reveal text === */
+  .reveal-mask { overflow: hidden; display: inline-block; line-height: 1; }
+  .reveal-mask-inner { display: inline-block; transform: translateY(110%); }
+
+  /* === Scroll progress === */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0;
+    height: 2px; background: var(--accent);
+    z-index: 100; width: 0%;
+  }
+
+  /* === Header === */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 90;
+    padding: 24px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.4s ease, padding 0.4s ease, border-color 0.4s ease;
+    border-bottom: 1px solid transparent;
+  }
+  .header.scrolled {
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 16px 40px;
+    border-bottom-color: var(--border);
+  }
+  .header-logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 800;
+    font-size: 22px; letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .header-nav {
+    display: flex; gap: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .header-nav a {
+    color: var(--text-muted); text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .header-nav a:hover { color: var(--accent); }
+  .header-cta {
+    background: var(--accent); color: var(--bg-primary);
+    padding: 10px 18px; border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+  }
+  .header-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  @media (max-width: 768px) {
+    .header { padding: 18px 20px; }
+    .header.scrolled { padding: 14px 20px; }
+    .header-nav { display: none; }
+  }
+
+  /* === Hero === */
+  .hero {
+    min-height: 100vh; position: relative;
+    padding: 0 40px;
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .hero-noise {
+    position: absolute; inset: 0;
+    opacity: 0.04; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 32px; height: 1px; background: var(--accent);
+  }
+  .hero-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 700, 'opsz' 96;
+    font-size: clamp(80px, 18vw, 280px);
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    margin: 0 0 40px;
+  }
+  .hero-title span { display: block; }
+  .hero-subtitle {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 400;
+    font-size: clamp(20px, 2.5vw, 32px);
+    color: var(--text-muted);
+    max-width: 720px;
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+  .hero-subtitle strong {
+    color: var(--text-primary); font-weight: 500;
+  }
+  .hero-support {
+    color: var(--text-dim); max-width: 560px;
+    font-size: 15px; line-height: 1.6;
+    margin-bottom: 56px;
+  }
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary, .btn-secondary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 18px 28px; border-radius: 999px;
+    text-decoration: none; cursor: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease;
+    border: none;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg-primary); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary {
+    background: transparent; color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { border-color: var(--text-primary); }
+
+  .hero-floats {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .float-card {
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-muted);
+    border-radius: 4px;
+  }
+  .float-card.accent {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  @media (max-width: 768px) {
+    .hero { padding: 0 20px; }
+    .hero-floats { display: none; }
+  }
+
+  /* === Section base === */
+  section { position: relative; padding: 120px 40px; }
+  @media (max-width: 768px) { section { padding: 80px 20px; } }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: ''; width: 32px; height: 1px; background: var(--accent);
+  }
+  .section-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600, 'opsz' 96;
+    font-size: clamp(40px, 7vw, 110px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0 0 32px;
+  }
+  .section-subtitle {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(18px, 2vw, 24px);
+    color: var(--text-muted);
+    max-width: 700px;
+    line-height: 1.4;
+  }
+
+  /* === Manifesto === */
+  .manifesto-text {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 400;
+    font-size: clamp(20px, 2.5vw, 28px);
+    line-height: 1.4;
+    color: var(--text-muted);
+    max-width: 880px;
+    margin-bottom: 48px;
+  }
+  .manifesto-impact {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 500;
+    font-size: clamp(22px, 3vw, 36px);
+    line-height: 1.3;
+    color: var(--accent);
+    max-width: 960px;
+    border-left: 2px solid var(--accent);
+    padding-left: 32px;
+  }
+
+  /* === Problem === */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  @media (max-width: 1024px) { .problem-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+  .problem-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .problem-list li {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 500;
+    font-size: clamp(20px, 2.5vw, 32px);
+    color: var(--text-primary);
+    display: flex; align-items: center; gap: 20px;
+    transition: padding-left 0.4s ease, color 0.3s ease;
+  }
+  .problem-list li:hover { padding-left: 12px; color: var(--accent); }
+  .problem-list li::before {
+    content: '—'; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* === Sistema === */
+  .cockpit {
+    position: relative;
+    width: 100%; max-width: 1100px;
+    aspect-ratio: 1.4 / 1;
+    margin: 80px auto 0;
+  }
+  .cockpit-svg { width: 100%; height: 100%; }
+  .cockpit-line {
+    stroke: var(--border-strong);
+    stroke-width: 1; fill: none;
+    stroke-dasharray: 4 4;
+  }
+  .cockpit-pulse {
+    stroke: var(--accent);
+    stroke-width: 2; fill: none;
+  }
+  .cockpit-center-ring {
+    fill: none; stroke: var(--accent);
+    stroke-width: 1.5;
+  }
+  .cockpit-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    padding: 12px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-radius: 4px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+  .cockpit-node:hover, .cockpit-node.active {
+    border-color: var(--accent); color: var(--accent);
+  }
+  .cockpit-core {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .cockpit-core-label {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 700;
+    font-size: clamp(20px, 3vw, 36px);
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+  }
+  .cockpit-core-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+  .system-phrase {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600;
+    font-size: clamp(22px, 3vw, 38px);
+    line-height: 1.3;
+    margin-top: 60px;
+    max-width: 1000px;
+  }
+  .system-phrase span { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .cockpit { aspect-ratio: 1 / 1.2; }
+    .cockpit-node { font-size: 9px; padding: 8px 10px; }
+  }
+
+  /* === Modules === */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 80px;
+  }
+  .modules-grid > :last-child { grid-column: span 2; }
+  @media (max-width: 768px) {
+    .modules-grid { grid-template-columns: 1fr; }
+    .modules-grid > :last-child { grid-column: span 1; }
+  }
+
+  .module-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.5s ease, transform 0.5s ease;
+    min-height: 340px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .module-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent-dim) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .module-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .module-card:hover::before { opacity: 1; }
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 60px;
+  }
+  .module-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600;
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1; letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .module-desc {
+    color: var(--text-muted);
+    font-size: 15px; line-height: 1.5;
+    max-width: 380px;
+  }
+  .module-mockup {
+    margin-top: 24px;
+    height: 80px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    position: relative; overflow: hidden;
+  }
+
+  /* === Projetos (scroll horizontal) === */
+  .projects-track {
+    display: flex; gap: 24px;
+    overflow-x: auto;
+    padding: 80px 40px 40px;
+    margin: 0 -40px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .projects-track::-webkit-scrollbar { display: none; }
+  @media (max-width: 768px) {
+    .projects-track { padding: 60px 20px 20px; margin: 0 -20px; }
+  }
+
+  .project-card {
+    flex: 0 0 480px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    transition: transform 0.5s ease, border-color 0.5s ease;
+    cursor: none;
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  @media (max-width: 768px) {
+    .project-card { flex: 0 0 86vw; }
+  }
+  .project-mockup {
+    height: 280px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .project-info { padding: 32px; }
+  .project-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent);
+    letter-spacing: 0.2em; margin-bottom: 16px;
+  }
+  .project-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600;
+    font-size: 28px; letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .project-desc {
+    color: var(--text-muted);
+    font-size: 14px; line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .project-tags {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .project-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--text-muted);
+  }
+
+  /* === Método === */
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 80px;
+    position: relative;
+  }
+  .method-line {
+    position: absolute;
+    top: 24px; left: 0; right: 0;
+    height: 1px; background: var(--border-strong);
+  }
+  .method-line-progress {
+    position: absolute;
+    top: 24px; left: 0;
+    height: 1px; background: var(--accent);
+    width: 0%;
+  }
+  @media (max-width: 1024px) { .method-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .method-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  .method-step {
+    position: relative; padding-top: 60px;
+  }
+  .method-dot {
+    position: absolute; top: 16px; left: 0;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-strong);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+  .method-step.active .method-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+  .method-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-muted);
+    letter-spacing: 0.2em; margin-bottom: 12px;
+  }
+  .method-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600;
+    font-size: 32px; letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .method-desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+
+  /* === Qualificação === */
+  .qual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 80px;
+  }
+  @media (max-width: 1024px) { .qual-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+  .qual-col h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 0 0 32px;
+    color: var(--text-muted);
+  }
+  .qual-list { list-style: none; padding: 0; margin: 0; }
+  .qual-list li {
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 400;
+    font-size: clamp(16px, 1.6vw, 20px);
+    line-height: 1.4;
+    display: flex; gap: 16px;
+    align-items: flex-start;
+  }
+  .qual-list li:last-child { border-bottom: 1px solid var(--border); }
+  .qual-list .check {
+    color: var(--accent); flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; padding-top: 2px;
+  }
+  .qual-list .x {
+    color: var(--text-dim); flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; padding-top: 2px;
+  }
+  .qual-list.no li { color: var(--text-muted); }
+
+  .qual-closing {
+    margin-top: 80px;
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 500;
+    font-size: clamp(22px, 3vw, 36px);
+    line-height: 1.3;
+    color: var(--accent);
+    max-width: 1000px;
+    margin-left: auto; margin-right: auto;
+  }
+
+  /* === Mapa de Crescimento (form) === */
+  .mapa-section {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .mapa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 80px;
+    align-items: start;
+  }
+  @media (max-width: 1024px) { .mapa-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+  .deliverable {
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .deliverable:last-child { border-bottom: 1px solid var(--border); }
+  .deliverable-icon {
+    width: 40px; height: 40px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+  }
+  .deliverable-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 500;
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  .deliverable-desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px;
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .form-input, .form-select {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+    padding: 14px 16px;
+    border-radius: 4px;
+    font-family: 'Geist', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    cursor: none;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .form-submit {
+    width: 100%;
+    background: var(--accent); color: var(--bg-primary);
+    border: none;
+    padding: 18px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: none;
+    transition: background 0.3s ease;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--accent-hover); }
+  .form-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-top: 16px; text-align: center;
+  }
+  .form-success {
+    text-align: center; padding: 40px 0;
+  }
+  .form-success-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 600;
+    font-size: 24px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .form-success-desc {
+    color: var(--text-muted); font-size: 15px; line-height: 1.5;
+  }
+
+  /* === Footer === */
+  .footer {
+    padding: 80px 40px 40px;
+    border-top: 1px solid var(--border);
+  }
+  @media (max-width: 768px) { .footer { padding: 60px 20px 30px; } }
+
+  .footer-logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wght' 800;
+    font-size: clamp(80px, 18vw, 280px);
+    line-height: 0.85; letter-spacing: -0.05em;
+    margin: 0 0 40px;
+  }
+  .footer-tagline {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(18px, 2vw, 24px);
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 80px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+  }
+  @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-col h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+    font-weight: 500;
+  }
+  .footer-col ul { list-style: none; padding: 0; margin: 0; }
+  .footer-col li { margin-bottom: 12px; }
+  .footer-col a {
+    color: var(--text-primary); text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-base {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  /* === Reveal animations === */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- Scroll progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="loader-logo"><span id="loaderLogo">LEXOR</span></div>
+  <div class="loader-meta">
+    <span>LOADING SISTEMA</span>
+    <span id="loaderPercent">000</span>
+  </div>
+  <div class="loader-bar" id="loaderBar"></div>
+</div>
+
+<!-- Header -->
+<header class="header" id="header">
+  <a href="#" class="header-logo">LEXOR</a>
+  <nav class="header-nav">
+    <a href="#sistema">Sistema</a>
+    <a href="#modulos">Soluções</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#metodo">Método</a>
+    <a href="#mapa">Diagnóstico</a>
+  </nav>
+  <a href="#mapa" class="header-cta">Solicitar Mapa</a>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+
+  <div class="hero-floats">
+    <div class="float-card accent" style="top: 18%; left: 8%;">IA</div>
+    <div class="float-card" style="top: 28%; right: 12%;">Google</div>
+    <div class="float-card" style="top: 62%; left: 6%;">Funil</div>
+    <div class="float-card" style="top: 72%; right: 8%;">CRM</div>
+    <div class="float-card" style="top: 14%; right: 30%;">App</div>
+    <div class="float-card accent" style="top: 78%; right: 32%;">Automação</div>
+  </div>
+
+  <div style="max-width: 1400px; margin: 0 auto; width: 100%; position: relative; z-index: 2; padding-top: 120px;">
+    <div class="hero-eyebrow">LEXOR · SISTEMA DE CRESCIMENTO · DESDE 2019</div>
+    <h1 class="hero-title">
+      <span class="reveal-mask"><span class="reveal-mask-inner" data-stagger="0">Vendemos</span></span>
+      <span class="reveal-mask"><span class="reveal-mask-inner" data-stagger="1">tempo.</span></span>
+    </h1>
+    <p class="hero-subtitle">
+      <strong>Conectamos sua empresa com o futuro.</strong><br/>
+      Marketing, IA, sistemas, apps e Google trabalhando como um só sistema de crescimento.
+    </p>
+    <p class="hero-support">
+      Para empresas que já vendem, mas precisam escalar sem depender de esforço manual, ferramentas soltas e operação improvisada.
+    </p>
+    <div class="hero-ctas">
+      <a href="#mapa" class="btn-primary">Solicitar Mapa de Crescimento →</a>
+      <a href="#projetos" class="btn-secondary">Ver sistemas em movimento</a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">01 · MANIFESTO</div>
+    <h2 class="section-title reveal">
+      Crescer não deveria<br/>
+      consumir todo<br/>
+      o seu tempo.
+    </h2>
+    <p class="manifesto-text reveal">
+      A Lexor cria estruturas digitais que atraem, atendem, vendem e automatizam. Estratégia e execução no mesmo lugar para empresas que querem operar com mais inteligência.
+    </p>
+    <p class="manifesto-impact reveal">
+      Quando marketing, atendimento, vendas e operação não conversam, a empresa cresce no esforço. Quando tudo vira sistema, a empresa cresce com inteligência.
+    </p>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section id="problema" style="background: var(--bg-secondary);">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">02 · O PROBLEMA INVISÍVEL</div>
+    <div class="problem-grid">
+      <div>
+        <h2 class="section-title reveal">
+          Sua empresa não precisa<br/>
+          de mais ferramentas soltas.<br/>
+          Precisa de um sistema.
+        </h2>
+        <p class="manifesto-text reveal" style="margin-top: 32px; font-size: 18px;">
+          Hoje, muitas empresas já têm site, Instagram, WhatsApp, planilhas, CRM, anúncios, Google e alguma automação. O problema é que quase nada conversa entre si.
+        </p>
+        <p class="reveal" style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; color: var(--accent); margin-top: 32px; line-height: 1.4;">
+          A Lexor conecta essas peças em uma estrutura única de crescimento.
+        </p>
+      </div>
+      <ul class="problem-list reveal">
+        <li>Leads se perdem.</li>
+        <li>O atendimento demora.</li>
+        <li>O follow-up depende de memória humana.</li>
+        <li>A equipe fica sobrecarregada.</li>
+        <li>Os dados ficam espalhados.</li>
+        <li>As decisões são tomadas no escuro.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SISTEMA DE CRESCIMENTO -->
+<section id="sistema">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">03 · MÉTODO PROPRIETÁRIO</div>
+    <h2 class="section-title reveal">Sistema de<br/>Crescimento Lexor™</h2>
+    <p class="section-subtitle reveal">
+      Não criamos apenas campanhas, sites ou agentes. Criamos sistemas digitais que reduzem esforço humano e aumentam velocidade operacional.
+    </p>
+
+    <!-- Cockpit -->
+    <div class="cockpit reveal">
+      <svg class="cockpit-svg" viewBox="0 0 1100 800" preserveAspectRatio="xMidYMid meet">
+        <!-- Concentric rings -->
+        <circle class="cockpit-line" cx="550" cy="400" r="140" />
+        <circle class="cockpit-line" cx="550" cy="400" r="240" />
+        <circle class="cockpit-line" cx="550" cy="400" r="340" />
+
+        <!-- Center pulse ring -->
+        <circle class="cockpit-center-ring" cx="550" cy="400" r="80">
+          <animate attributeName="r" values="80;90;80" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite" />
+        </circle>
+
+        <!-- Connection lines from center to nodes -->
+        <line class="cockpit-line" x1="550" y1="400" x2="220" y2="180" />
+        <line class="cockpit-line" x1="550" y1="400" x2="550" y2="100" />
+        <line class="cockpit-line" x1="550" y1="400" x2="880" y2="180" />
+        <line class="cockpit-line" x1="550" y1="400" x2="980" y2="400" />
+        <line class="cockpit-line" x1="550" y1="400" x2="880" y2="620" />
+        <line class="cockpit-line" x1="550" y1="400" x2="550" y2="700" />
+        <line class="cockpit-line" x1="550" y1="400" x2="220" y2="620" />
+        <line class="cockpit-line" x1="550" y1="400" x2="120" y2="400" />
+
+        <!-- Pulse paths -->
+        <line class="cockpit-pulse" x1="550" y1="400" x2="220" y2="180" stroke-dasharray="6 200" stroke-dashoffset="0">
+          <animate attributeName="stroke-dashoffset" values="0;-206" dur="2.4s" repeatCount="indefinite" />
+        </line>
+        <line class="cockpit-pulse" x1="550" y1="400" x2="980" y2="400" stroke-dasharray="6 200" stroke-dashoffset="50">
+          <animate attributeName="stroke-dashoffset" values="0;-206" dur="2.8s" repeatCount="indefinite" />
+        </line>
+        <line class="cockpit-pulse" x1="550" y1="400" x2="550" y2="100" stroke-dasharray="6 200" stroke-dashoffset="100">
+          <animate attributeName="stroke-dashoffset" values="0;-206" dur="3.2s" repeatCount="indefinite" />
+        </line>
+        <line class="cockpit-pulse" x1="550" y1="400" x2="880" y2="620" stroke-dasharray="6 200" stroke-dashoffset="80">
+          <animate attributeName="stroke-dashoffset" values="0;-206" dur="2.6s" repeatCount="indefinite" />
+        </line>
+
+        <!-- Center dot -->
+        <circle cx="550" cy="400" r="6" fill="#C6F432" />
+      </svg>
+
+      <!-- Center label -->
+      <div class="cockpit-core">
+        <div class="cockpit-core-label">SISTEMA<br/>LEXOR</div>
+        <div class="cockpit-core-meta">● ATIVO</div>
+      </div>
+
+      <!-- Nodes -->
+      <div class="cockpit-node" style="left: 20%; top: 22%;">Marketing</div>
+      <div class="cockpit-node" style="left: 50%; top: 12%;">IA</div>
+      <div class="cockpit-node" style="left: 80%; top: 22%;">Site</div>
+      <div class="cockpit-node" style="left: 89%; top: 50%;">App</div>
+      <div class="cockpit-node" style="left: 80%; top: 78%;">CRM</div>
+      <div class="cockpit-node" style="left: 50%; top: 88%;">Google</div>
+      <div class="cockpit-node" style="left: 20%; top: 78%;">Automação</div>
+      <div class="cockpit-node" style="left: 11%; top: 50%;">Dados</div>
+    </div>
+
+    <p class="system-phrase reveal">
+      Marketing atrai. IA atende. Sistema organiza.<br/>
+      Google posiciona. <span>Dados mostram o próximo movimento.</span>
+    </p>
+  </div>
+</section>
+
+<!-- MÓDULOS -->
+<section id="modulos" style="background: var(--bg-secondary);">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">04 · SOLUÇÕES</div>
+    <h2 class="section-title reveal">Módulos que formam<br/>o seu sistema<br/>de crescimento.</h2>
+
+    <div class="modules-grid">
+      <article class="module-card reveal" data-module>
+        <div>
+          <div class="module-num">01 / AQUISIÇÃO</div>
+          <h3 class="module-title">Funis e Tráfego</h3>
+          <p class="module-desc">Funis, campanhas e posicionamento para atrair demanda qualificada.</p>
+        </div>
+        <div class="module-mockup">
+          <svg width="100%" height="100%" viewBox="0 0 320 80" preserveAspectRatio="none">
+            <path d="M0,60 L60,55 L120,40 L180,30 L240,20 L320,10" stroke="#C6F432" stroke-width="1.5" fill="none" />
+            <path d="M0,60 L60,55 L120,40 L180,30 L240,20 L320,10 L320,80 L0,80 Z" fill="rgba(198,244,50,0.06)" />
+            <circle cx="60" cy="55" r="2" fill="#C6F432" />
+            <circle cx="180" cy="30" r="2" fill="#C6F432" />
+            <circle cx="320" cy="10" r="2" fill="#C6F432" />
+          </svg>
+        </div>
+      </article>
+
+      <article class="module-card reveal" data-module>
+        <div>
+          <div class="module-num">02 / ATENDIMENTO IA</div>
+          <h3 class="module-title">Agentes Conversacionais</h3>
+          <p class="module-desc">Agentes que respondem, qualificam, fazem follow-up e reduzem dependência humana.</p>
+        </div>
+        <div class="module-mockup">
+          <svg width="100%" height="100%" viewBox="0 0 320 80" preserveAspectRatio="none">
+            <rect x="20" y="20" width="120" height="14" rx="7" fill="#1F1F1F" />
+            <rect x="180" y="40" width="100" height="14" rx="7" fill="#C6F432" opacity="0.25" />
+            <rect x="20" y="60" width="80" height="10" rx="5" fill="#1F1F1F" />
+            <circle cx="290" cy="20" r="3" fill="#C6F432">
+              <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+        </div>
+      </article>
+
+      <article class="module-card reveal" data-module>
+        <div>
+          <div class="module-num">03 / OPERAÇÃO DIGITAL</div>
+          <h3 class="module-title">Sistemas e CRMs</h3>
+          <p class="module-desc">Sistemas, CRMs, apps e automações para organizar processos, tarefas e dados.</p>
+        </div>
+        <div class="module-mockup">
+          <svg width="100%" height="100%" viewBox="0 0 320 80" preserveAspectRatio="none">
+            <rect x="20" y="20" width="60" height="40" rx="4" fill="#1F1F1F" />
+            <rect x="100" y="20" width="60" height="40" rx="4" fill="#1F1F1F" />
+            <rect x="180" y="20" width="60" height="40" rx="4" fill="#C6F432" opacity="0.18" />
+            <rect x="260" y="20" width="40" height="40" rx="4" fill="#1F1F1F" />
+          </svg>
+        </div>
+      </article>
+
+      <article class="module-card reveal" data-module>
+        <div>
+          <div class="module-num">04 / PRESENÇA PREMIUM</div>
+          <h3 class="module-title">Sites e Experiências</h3>
+          <p class="module-desc">Sites, páginas e experiências digitais que aumentam autoridade e conversão.</p>
+        </div>
+        <div class="module-mockup">
+          <svg width="100%" height="100%" viewBox="0 0 320 80" preserveAspectRatio="none">
+            <rect x="20" y="20" width="280" height="6" rx="3" fill="#C6F432" />
+            <rect x="20" y="34" width="180" height="4" rx="2" fill="#2A2A2A" />
+            <rect x="20" y="44" width="220" height="4" rx="2" fill="#2A2A2A" />
+            <rect x="20" y="58" width="80" height="14" rx="7" fill="#C6F432" opacity="0.3" />
+          </svg>
+        </div>
+      </article>
+
+      <article class="module-card reveal" data-module>
+        <div>
+          <div class="module-num">05 / BUSCA & REPUTAÇÃO</div>
+          <h3 class="module-title">Google · SEO · Ads</h3>
+          <p class="module-desc">Google, SEO local e presença digital para ser encontrado com intenção de compra.</p>
+        </div>
+        <div class="module-mockup">
+          <svg width="100%" height="100%" viewBox="0 0 320 80" preserveAspectRatio="none">
+            <circle cx="40" cy="40" r="14" fill="none" stroke="#C6F432" stroke-width="1.5" />
+            <line x1="50" y1="50" x2="62" y2="62" stroke="#C6F432" stroke-width="1.5" />
+            <rect x="80" y="34" width="140" height="4" rx="2" fill="#2A2A2A" />
+            <rect x="80" y="44" width="100" height="4" rx="2" fill="#2A2A2A" />
+            <rect x="240" y="30" width="60" height="20" rx="4" fill="#C6F432" opacity="0.18" />
+          </svg>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">05 · PROJETOS</div>
+    <h2 class="section-title reveal">Projetos<br/>em movimento</h2>
+    <p class="section-subtitle reveal">
+      A Lexor entra quando a empresa já tem movimento — mas precisa de sistema.
+    </p>
+  </div>
+
+  <div class="projects-track">
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- Map grid -->
+          <g stroke="#1F1F1F" stroke-width="1">
+            <line x1="0" y1="60" x2="480" y2="60" />
+            <line x1="0" y1="120" x2="480" y2="120" />
+            <line x1="0" y1="180" x2="480" y2="180" />
+            <line x1="0" y1="240" x2="480" y2="240" />
+            <line x1="120" y1="0" x2="120" y2="280" />
+            <line x1="240" y1="0" x2="240" y2="280" />
+            <line x1="360" y1="0" x2="360" y2="280" />
+          </g>
+          <!-- Route path -->
+          <path d="M40,220 Q120,180 200,160 T380,100" stroke="#C6F432" stroke-width="2" fill="none" stroke-dasharray="4 4" />
+          <!-- Pins -->
+          <circle cx="40" cy="220" r="6" fill="#C6F432" />
+          <circle cx="200" cy="160" r="4" fill="#C6F432" />
+          <circle cx="380" cy="100" r="6" fill="#C6F432">
+            <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <!-- HUD -->
+          <rect x="20" y="20" width="100" height="24" fill="#161616" stroke="#2A2A2A" />
+          <text x="32" y="36" fill="#C6F432" font-family="JetBrains Mono" font-size="10">● ROTA ATIVA</text>
+          <rect x="360" y="240" width="100" height="20" fill="#161616" stroke="#2A2A2A" />
+          <text x="372" y="254" fill="#888" font-family="JetBrains Mono" font-size="9">ETA 14:32</text>
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">01 — ID TRANSPORTES</div>
+        <h3 class="project-name">Logística digital com IA</h3>
+        <p class="project-desc">De operação manual para logística digital com IA, organização de comprovantes e rastreamento operacional.</p>
+        <div class="project-tags">
+          <span class="project-tag">Sistema</span>
+          <span class="project-tag">Logística</span>
+          <span class="project-tag">IA Operacional</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- Phone frame -->
+          <rect x="180" y="20" width="120" height="240" rx="14" fill="#161616" stroke="#2A2A2A" stroke-width="1.5" />
+          <rect x="195" y="40" width="90" height="6" rx="3" fill="#C6F432" />
+          <rect x="195" y="56" width="60" height="4" rx="2" fill="#2A2A2A" />
+          <!-- Chart -->
+          <path d="M195,180 L210,160 L225,170 L240,140 L255,150 L270,120 L285,100" stroke="#C6F432" stroke-width="2" fill="none" />
+          <rect x="195" y="200" width="90" height="40" rx="4" fill="#1A1A1A" />
+          <rect x="200" y="208" width="40" height="4" rx="2" fill="#888" />
+          <rect x="200" y="220" width="60" height="4" rx="2" fill="#555" />
+          <rect x="200" y="230" width="50" height="4" rx="2" fill="#555" />
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">02 — FOCUS CLUB</div>
+        <h3 class="project-name">App de jornada fitness</h3>
+        <p class="project-desc">De consultoria fitness para experiência mobile com produto digital e jornada guiada.</p>
+        <div class="project-tags">
+          <span class="project-tag">App Mobile</span>
+          <span class="project-tag">Fitness</span>
+          <span class="project-tag">Produto Digital</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- WhatsApp chat -->
+          <rect x="40" y="40" width="200" height="32" rx="16" fill="#161616" />
+          <rect x="50" y="50" width="120" height="4" rx="2" fill="#888" />
+          <rect x="50" y="60" width="160" height="4" rx="2" fill="#555" />
+          <rect x="240" y="100" width="200" height="32" rx="16" fill="#C6F432" opacity="0.18" />
+          <rect x="252" y="110" width="140" height="4" rx="2" fill="#C6F432" />
+          <rect x="252" y="120" width="100" height="4" rx="2" fill="#C6F432" opacity="0.6" />
+          <rect x="40" y="160" width="180" height="32" rx="16" fill="#161616" />
+          <rect x="50" y="170" width="100" height="4" rx="2" fill="#888" />
+          <rect x="50" y="180" width="140" height="4" rx="2" fill="#555" />
+          <!-- Typing indicator -->
+          <rect x="240" y="220" width="60" height="20" rx="10" fill="#C6F432" opacity="0.18" />
+          <circle cx="252" cy="230" r="2" fill="#C6F432">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" begin="0s" />
+          </circle>
+          <circle cx="262" cy="230" r="2" fill="#C6F432">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" begin="0.2s" />
+          </circle>
+          <circle cx="272" cy="230" r="2" fill="#C6F432">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite" begin="0.4s" />
+          </circle>
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">03 — REDE KUMON</div>
+        <h3 class="project-name">IA no WhatsApp</h3>
+        <p class="project-desc">De atendimento reativo para captação, qualificação, follow-up e agendamento com agentes de IA.</p>
+        <div class="project-tags">
+          <span class="project-tag">IA WhatsApp</span>
+          <span class="project-tag">CRM</span>
+          <span class="project-tag">Educação</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- Sales page mockup -->
+          <rect x="60" y="30" width="360" height="40" rx="4" fill="#161616" />
+          <rect x="76" y="44" width="200" height="6" rx="3" fill="#C6F432" />
+          <rect x="76" y="56" width="120" height="4" rx="2" fill="#555" />
+          <rect x="60" y="90" width="170" height="80" rx="4" fill="#161616" />
+          <rect x="240" y="90" width="180" height="80" rx="4" fill="#161616" />
+          <rect x="60" y="190" width="360" height="50" rx="25" fill="#C6F432" opacity="0.2" />
+          <rect x="180" y="208" width="120" height="14" rx="7" fill="#C6F432" />
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">04 — DUDA DIAS</div>
+        <h3 class="project-name">Funil digital para creator</h3>
+        <p class="project-desc">De conhecimento especialista para funil digital, posicionamento e vendas assistidas.</p>
+        <div class="project-tags">
+          <span class="project-tag">Funil</span>
+          <span class="project-tag">UGC</span>
+          <span class="project-tag">Infoproduto</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- SaaS interface -->
+          <rect x="20" y="20" width="80" height="240" rx="4" fill="#161616" />
+          <circle cx="40" cy="50" r="6" fill="#C6F432" />
+          <rect x="52" y="46" width="40" height="4" rx="2" fill="#888" />
+          <circle cx="40" cy="80" r="6" fill="#2A2A2A" />
+          <rect x="52" y="76" width="40" height="4" rx="2" fill="#555" />
+          <circle cx="40" cy="110" r="6" fill="#2A2A2A" />
+          <rect x="52" y="106" width="40" height="4" rx="2" fill="#555" />
+          <!-- Main content -->
+          <rect x="120" y="20" width="340" height="60" rx="4" fill="#161616" />
+          <rect x="136" y="36" width="120" height="6" rx="3" fill="#C6F432" />
+          <rect x="136" y="50" width="200" height="4" rx="2" fill="#555" />
+          <rect x="120" y="100" width="160" height="160" rx="4" fill="#161616" />
+          <rect x="300" y="100" width="160" height="160" rx="4" fill="#C6F432" opacity="0.06" stroke="#C6F432" stroke-width="1" />
+          <rect x="320" y="120" width="60" height="6" rx="3" fill="#C6F432" />
+          <rect x="320" y="140" width="120" height="4" rx="2" fill="#888" />
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">05 — LEXY TOOLS</div>
+        <h3 class="project-name">SaaS com agentes de IA</h3>
+        <p class="project-desc">De tarefas manuais de UGC para um app com agentes de IA especializados.</p>
+        <div class="project-tags">
+          <span class="project-tag">SaaS</span>
+          <span class="project-tag">Agentes IA</span>
+          <span class="project-tag">UGC</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-mockup">
+        <svg width="100%" height="100%" viewBox="0 0 480 280" preserveAspectRatio="none">
+          <rect x="0" y="0" width="480" height="280" fill="#0F0F0F" />
+          <!-- Menu -->
+          <rect x="40" y="30" width="180" height="220" rx="4" fill="#161616" />
+          <rect x="56" y="50" width="80" height="6" rx="3" fill="#C6F432" />
+          <rect x="56" y="80" width="148" height="40" rx="4" fill="#1A1A1A" />
+          <rect x="56" y="130" width="148" height="40" rx="4" fill="#1A1A1A" />
+          <rect x="56" y="180" width="148" height="40" rx="4" fill="#C6F432" opacity="0.18" />
+          <!-- Cart -->
+          <rect x="240" y="30" width="200" height="160" rx="4" fill="#161616" />
+          <rect x="256" y="50" width="60" height="4" rx="2" fill="#888" />
+          <rect x="256" y="70" width="160" height="3" rx="1" fill="#2A2A2A" />
+          <rect x="256" y="84" width="120" height="3" rx="1" fill="#2A2A2A" />
+          <rect x="256" y="98" width="140" height="3" rx="1" fill="#2A2A2A" />
+          <line x1="256" y1="120" x2="424" y2="120" stroke="#2A2A2A" />
+          <rect x="256" y="134" width="80" height="6" rx="3" fill="#C6F432" />
+          <rect x="240" y="210" width="200" height="40" rx="20" fill="#C6F432" opacity="0.2" />
+          <rect x="310" y="224" width="60" height="12" rx="6" fill="#C6F432" />
+        </svg>
+      </div>
+      <div class="project-info">
+        <div class="project-num">06 — SORVETERIA TATUS</div>
+        <h3 class="project-name">Pedidos automatizados</h3>
+        <p class="project-desc">De atendimento manual no WhatsApp para pedidos, dúvidas e vendas automatizadas.</p>
+        <div class="project-tags">
+          <span class="project-tag">WhatsApp</span>
+          <span class="project-tag">Delivery</span>
+          <span class="project-tag">Atendimento IA</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- MÉTODO -->
+<section id="metodo" style="background: var(--bg-secondary);">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">06 · MÉTODO</div>
+    <h2 class="section-title reveal">Método Lexor</h2>
+    <p class="section-subtitle reveal">Estratégia e execução no mesmo lugar.</p>
+
+    <div class="method-grid reveal">
+      <div class="method-line"></div>
+      <div class="method-line-progress" id="methodProgress"></div>
+
+      <div class="method-step active">
+        <div class="method-dot"></div>
+        <div class="method-num">01 / DIAGNOSTICAR</div>
+        <h3 class="method-title">Diagnosticar</h3>
+        <p class="method-desc">Entendemos gargalos de crescimento, vendas, atendimento, operação e presença digital.</p>
+      </div>
+
+      <div class="method-step">
+        <div class="method-dot"></div>
+        <div class="method-num">02 / DESENHAR</div>
+        <h3 class="method-title">Desenhar</h3>
+        <p class="method-desc">Definimos a arquitetura ideal: site, app, funil, agente, CRM, automação ou Google.</p>
+      </div>
+
+      <div class="method-step">
+        <div class="method-dot"></div>
+        <div class="method-num">03 / CONSTRUIR</div>
+        <h3 class="method-title">Construir</h3>
+        <p class="method-desc">Criamos os ativos digitais que colocam o sistema para rodar.</p>
+      </div>
+
+      <div class="method-step">
+        <div class="method-dot"></div>
+        <div class="method-num">04 / OTIMIZAR</div>
+        <h3 class="method-title">Otimizar</h3>
+        <p class="method-desc">Medimos, ajustamos e evoluímos com base em dados reais.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUALIFICAÇÃO -->
+<section id="qualificacao">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">07 · QUALIFICAÇÃO</div>
+    <h2 class="section-title reveal">Construído para empresas<br/>que já estão em movimento.</h2>
+
+    <div class="qual-grid">
+      <div class="qual-col reveal">
+        <h3>A Lexor é para empresas que:</h3>
+        <ul class="qual-list">
+          <li><span class="check">✓</span> Já têm clientes, operação e oferta validada.</li>
+          <li><span class="check">✓</span> Sentem que dependem demais de atendimento manual.</li>
+          <li><span class="check">✓</span> Perdem oportunidades por falta de follow-up.</li>
+          <li><span class="check">✓</span> Têm marketing, site, CRM e atendimento desconectados.</li>
+          <li><span class="check">✓</span> Querem crescer com tecnologia, sem montar uma equipe interna gigante.</li>
+        </ul>
+      </div>
+      <div class="qual-col reveal">
+        <h3>A Lexor não é para quem procura apenas:</h3>
+        <ul class="qual-list no">
+          <li><span class="x">✗</span> Um post bonito.</li>
+          <li><span class="x">✗</span> Um site barato.</li>
+          <li><span class="x">✗</span> Uma automação isolada.</li>
+          <li><span class="x">✗</span> Uma promessa mágica de resultado.</li>
+          <li><span class="x">✗</span> Um fornecedor sem envolvimento estratégico.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qual-closing reveal">
+      Se você quer apenas uma peça solta, talvez existam opções mais baratas.<br/>
+      Se você quer construir um sistema, a Lexor entra.
+    </div>
+  </div>
+</section>
+
+<!-- MAPA DE CRESCIMENTO -->
+<section id="mapa" class="mapa-section">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-eyebrow reveal">08 · DIAGNÓSTICO</div>
+    <h2 class="section-title reveal">
+      O futuro da sua empresa<br/>
+      provavelmente não começa<br/>
+      com uma campanha.<br/>
+      <span style="color: var(--accent);">Começa com um mapa.</span>
+    </h2>
+    <p class="section-subtitle reveal">
+      Em um diagnóstico gratuito, identificamos onde sua empresa perde tempo, dinheiro e oportunidades, e desenhamos um mapa prático para crescer com marketing, IA e tecnologia trabalhando juntos.
+    </p>
+
+    <div class="mapa-grid">
+      <div class="reveal">
+        <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin: 0 0 12px;">O QUE VOCÊ RECEBE</h3>
+
+        <div class="deliverable">
+          <div class="deliverable-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5z"/><path d="M4 7l8 5 8-5"/><path d="M12 12v10"/></svg></div>
+          <div>
+            <div class="deliverable-title">Mapa de Gargalos</div>
+            <div class="deliverable-desc">Onde a empresa perde tempo, leads, vendas e oportunidades.</div>
+          </div>
+        </div>
+
+        <div class="deliverable">
+          <div class="deliverable-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div>
+            <div class="deliverable-title">Mapa de Alavancas</div>
+            <div class="deliverable-desc">Quais pontos podem gerar crescimento com IA, automação, marketing ou Google.</div>
+          </div>
+        </div>
+
+        <div class="deliverable">
+          <div class="deliverable-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/></svg></div>
+          <div>
+            <div class="deliverable-title">Prioridade de Execução</div>
+            <div class="deliverable-desc">O que deve ser feito primeiro, segundo e terceiro.</div>
+          </div>
+        </div>
+
+        <div class="deliverable">
+          <div class="deliverable-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+          <div>
+            <div class="deliverable-title">Arquitetura Recomendada</div>
+            <div class="deliverable-desc">Site, funil, agente, app, CRM, automação ou presença no Google.</div>
+          </div>
+        </div>
+
+        <div class="deliverable">
+          <div class="deliverable-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div>
+            <div class="deliverable-title">Próximo Movimento</div>
+            <div class="deliverable-desc">Plano claro para sair do diagnóstico e entrar na execução.</div>
+          </div>
+        </div>
+      </div>
+
+      <form class="form-card reveal" id="mapaForm" onsubmit="return submitForm(event)">
+        <div id="formFields">
+          <div class="form-group">
+            <label class="form-label" for="nome">Nome</label>
+            <input class="form-input" type="text" id="nome" name="nome" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="empresa">Empresa</label>
+            <input class="form-input" type="text" id="empresa" name="empresa" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="whatsapp">WhatsApp</label>
+            <input class="form-input" type="tel" id="whatsapp" name="whatsapp" placeholder="(11) 99999-9999" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="desafio">Principal Desafio</label>
+            <select class="form-select" id="desafio" name="desafio" required>
+              <option value="">Selecione...</option>
+              <option>Marketing</option>
+              <option>Vendas</option>
+              <option>Atendimento</option>
+              <option>Operação</option>
+              <option>Google</option>
+              <option>Automação</option>
+              <option>IA</option>
+              <option>Sistema ou app</option>
+              <option>Ainda não sei</option>
+            </select>
+          </div>
+          <button type="submit" class="form-submit">Quero meu Mapa de Crescimento →</button>
+          <div class="form-note">Diagnóstico gratuito para empresas em crescimento.</div>
+        </div>
+        <div id="formSuccess" class="form-success" style="display: none;">
+          <div class="form-success-title">Mapa em construção.</div>
+          <div class="form-success-desc">Em até 24h um estrategista da Lexor entra em contato pelo WhatsApp para agendar seu diagnóstico.</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <h2 class="footer-logo">LEXOR</h2>
+    <p class="footer-tagline">Vendemos tempo. Conectamos sua empresa com o futuro.</p>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>SISTEMA</h4>
+        <ul>
+          <li><a href="#sistema">Sistema Lexor™</a></li>
+          <li><a href="#modulos">Soluções</a></li>
+          <li><a href="#metodo">Método</a></li>
+          <li><a href="#mapa">Diagnóstico</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>PROJETOS</h4>
+        <ul>
+          <li><a href="#projetos">ID Transportes</a></li>
+          <li><a href="#projetos">Focus Club</a></li>
+          <li><a href="#projetos">Kumon</a></li>
+          <li><a href="#projetos">Lexy Tools</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>CONTATO</h4>
+        <ul>
+          <li><a href="mailto:contato@lexor.com.br">contato@lexor.com.br</a></li>
+          <li><a href="#">Sorocaba · SP</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>SOCIAL</h4>
+        <ul>
+          <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="#" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="#" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <a href="https://wa.me/" target="_blank" rel="noopener" class="btn-primary" style="margin: 24px 0;">Falar no WhatsApp →</a>
+
+    <div class="footer-base">
+      <span>© LEXOR 2026 · SISTEMAS DE CRESCIMENTO</span>
+      <span>CONSTRUÍDO EM SOROCABA · BRASIL</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // === Loader ===
+  window.addEventListener('load', () => {
+    const loaderBar = document.getElementById('loaderBar');
+    const loaderPercent = document.getElementById('loaderPercent');
+    const loader = document.getElementById('loader');
+    const loaderLogo = document.getElementById('loaderLogo');
+
+    gsap.to(loaderLogo, { y: 0, duration: 0.9, ease: 'expo.out' });
+
+    let pct = 0;
+    const interval = setInterval(() => {
+      pct += Math.random() * 14 + 6;
+      if (pct >= 100) { pct = 100; clearInterval(interval); }
+      loaderBar.style.width = pct + '%';
+      loaderPercent.textContent = String(Math.floor(pct)).padStart(3, '0');
+    }, 90);
+
+    setTimeout(() => {
+      gsap.to(loader, {
+        y: '-100%', duration: 1.1, ease: 'expo.inOut',
+        onComplete: () => { loader.style.display = 'none'; initHero(); }
+      });
+    }, 1700);
+  });
+
+  function initHero() {
+    const innerEls = document.querySelectorAll('.hero-title .reveal-mask-inner');
+    gsap.to(innerEls, {
+      y: 0, duration: 1.4, ease: 'expo.out',
+      stagger: 0.1
+    });
+
+    gsap.from('.hero-eyebrow', { opacity: 0, y: 20, duration: 1, ease: 'power3.out', delay: 0.4 });
+    gsap.from('.hero-subtitle', { opacity: 0, y: 30, duration: 1, ease: 'power3.out', delay: 0.7 });
+    gsap.from('.hero-support', { opacity: 0, y: 30, duration: 1, ease: 'power3.out', delay: 0.85 });
+    gsap.from('.hero-ctas > *', { opacity: 0, y: 20, duration: 0.9, ease: 'power3.out', delay: 1, stagger: 0.1 });
+    gsap.from('.float-card', { opacity: 0, scale: 0.8, duration: 1.2, ease: 'expo.out', delay: 1.2, stagger: 0.08 });
+  }
+
+  // === Cursor ===
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    cursorDot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  });
+  function loopCursor() {
+    rx += (mx - rx) * 0.18;
+    ry += (my - ry) * 0.18;
+    cursorRing.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    requestAnimationFrame(loopCursor);
+  }
+  loopCursor();
+
+  document.querySelectorAll('a, button, .module-card, .project-card, .cockpit-node').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+  });
+
+  // === Module hover (radial gradient follow) ===
+  document.querySelectorAll('[data-module]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // === Header scroll state ===
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 60);
+
+    // Scroll progress
+    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('scrollProgress').style.width = scrolled + '%';
+  });
+
+  // === Reveal on scroll ===
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // === Float cards parallax ===
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    document.querySelectorAll('.float-card').forEach((card, i) => {
+      const intensity = (i + 1) * 6;
+      card.style.transform = `translate(${x * intensity}px, ${y * intensity}px)`;
+    });
+  });
+
+  // === Lenis smooth scroll ===
+  if (window.Lenis && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -80, duration: 1.4 }); }
+      });
+    });
+  }
+
+  // === Method progress on scroll ===
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to('#methodProgress', {
+      width: '100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#metodo',
+        start: 'top 60%',
+        end: 'bottom 40%',
+        scrub: 1,
+        onUpdate: (self) => {
+          const steps = document.querySelectorAll('.method-step');
+          const idx = Math.floor(self.progress * steps.length);
+          steps.forEach((s, i) => s.classList.toggle('active', i <= idx));
+        }
+      }
+    });
+
+    // Cockpit nodes pulse on scroll into view
+    ScrollTrigger.create({
+      trigger: '.cockpit',
+      start: 'top 70%',
+      onEnter: () => {
+        document.querySelectorAll('.cockpit-node').forEach((n, i) => {
+          setTimeout(() => n.classList.add('active'), i * 150);
+          setTimeout(() => n.classList.remove('active'), i * 150 + 800);
+        });
+      }
+    });
+  }
+
+  // === Form ===
+  function submitForm(e) {
+    e.preventDefault();
+    const fields = document.getElementById('formFields');
+    const success = document.getElementById('formSuccess');
+    fields.style.display = 'none';
+    success.style.display = 'block';
+    return false;
+  }
+</script>
+
+</body>
+</html>
