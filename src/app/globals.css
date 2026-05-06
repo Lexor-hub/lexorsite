@@ -3238,3 +3238,432 @@ body::after {
     display: none;
   }
 }
+
+/* ── NOVOS ELEMENTOS DE COPY ──────────────────────────────── */
+
+.manifesto-tag {
+  margin: 40px 0 0;
+  font-family: var(--font-code);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.problem-narrative {
+  margin: 0;
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 2;
+  color: var(--text-muted);
+}
+
+.problem-urgency {
+  margin: 32px 0 0;
+  padding: 20px 24px;
+  border-left: 2px solid var(--accent);
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.7;
+  color: var(--text-muted);
+  background: rgba(198, 244, 50, 0.04);
+}
+
+.project-result {
+  margin: 8px 0 12px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.project-tag-own {
+  background: var(--accent) !important;
+  color: var(--bg-primary) !important;
+  font-weight: 700;
+}
+
+.method-detail {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ── AGENTS SECTION ──────────────────────────────────────── */
+
+.agents-section {
+  padding: 120px 0;
+}
+
+.agents-table {
+  margin: 64px 0 48px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.agents-table-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.agents-table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.agents-table-row:last-child {
+  border-bottom: none;
+}
+
+.agents-table-row:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.agents-col-human,
+.agents-col-agent {
+  padding: 18px 24px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.agents-table-head .agents-col-human,
+.agents-table-head .agents-col-agent {
+  font-family: var(--font-code);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 24px;
+}
+
+.agents-col-human {
+  color: var(--text-dim);
+  border-right: 1px solid var(--border);
+}
+
+.agents-table-head .agents-col-human {
+  color: var(--text-muted);
+}
+
+.agents-col-agent {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.agents-table-head .agents-col-agent {
+  color: var(--accent);
+}
+
+.agents-check {
+  color: var(--accent);
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.agents-cta {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 48px;
+}
+
+/* ── STATS STRIP ─────────────────────────────────────────── */
+
+.stats-strip {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0;
+}
+
+.stats-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.stats-num {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stats-label {
+  font-family: var(--font-code);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.stats-sep {
+  font-size: 24px;
+  color: var(--border-strong);
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .stats-sep { display: none; }
+  .stats-inner { gap: 32px; }
+  .agents-table-head,
+  .agents-table-row { grid-template-columns: 1fr; }
+  .agents-col-human { border-right: none; border-bottom: 1px solid var(--border); }
+  .agents-table-head .agents-col-human { display: none; }
+  .agents-col-agent { background: rgba(198, 244, 50, 0.04); }
+}
+
+/* ── DESIGN ENHANCEMENTS ─────────────────────────────────── */
+
+/* Gradient text: section titles white → lime-green */
+.section-title {
+  background: linear-gradient(175deg, #ffffff 15%, rgba(198, 244, 50, 0.68) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Accent spans inside section titles keep green */
+.section-title span {
+  background: none;
+  -webkit-text-fill-color: var(--accent);
+}
+
+/* Footer logo gradient: premium large text */
+.footer-logo {
+  background: linear-gradient(160deg, #ffffff 20%, rgba(198, 244, 50, 0.55) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Eyebrow accent line — neon glow */
+.hero-eyebrow::before,
+.section-eyebrow::before {
+  box-shadow: 0 0 14px rgba(198, 244, 50, 0.75), 0 0 28px rgba(198, 244, 50, 0.3);
+}
+
+/* btn-primary — persistent subtle glow, stronger on hover */
+.btn-primary {
+  box-shadow: 0 0 22px rgba(198, 244, 50, 0.22);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 14px 36px rgba(198, 244, 50, 0.35), 0 0 60px rgba(198, 244, 50, 0.14);
+}
+
+/* header-cta — persistent glow */
+.header-cta {
+  box-shadow: 0 0 18px rgba(198, 244, 50, 0.25);
+}
+
+/* system-phrase — much bigger, centered, dramatic callout */
+.system-phrase {
+  max-width: 1100px;
+  margin: 100px auto 0;
+  font-size: clamp(36px, 5.5vw, 80px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  text-align: center;
+  background: linear-gradient(175deg, #ffffff 30%, rgba(198, 244, 50, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.system-phrase span {
+  background: none;
+  -webkit-text-fill-color: var(--accent);
+  text-shadow: 0 0 40px rgba(198, 244, 50, 0.5);
+}
+
+/* manifesto-impact — glow on the quote */
+.manifesto-impact {
+  text-shadow: 0 0 50px rgba(198, 244, 50, 0.28);
+}
+
+/* qual-closing — bigger, more impactful */
+.qual-closing {
+  font-size: clamp(26px, 3.2vw, 44px);
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+/* module-card hover — inset top glow + deeper shadow */
+.module-card:hover {
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(198, 244, 50, 0.05),
+    inset 0 1px 0 rgba(198, 244, 50, 0.45);
+}
+
+/* project-card hover — green aura */
+.project-card:hover {
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.32),
+    0 0 50px rgba(198, 244, 50, 0.07);
+}
+
+/* agents-table-row — green left border on hover */
+.agents-table-row {
+  border-left: 2px solid transparent;
+  transition: background 0.2s, border-left-color 0.3s;
+}
+
+.agents-table-row:hover {
+  border-left-color: var(--accent);
+}
+
+/* problem-urgency — pulsing border */
+@keyframes urgency-pulse {
+  0%, 100% { border-left-color: var(--accent); }
+  50% { border-left-color: rgba(198, 244, 50, 0.25); }
+}
+
+.problem-urgency {
+  animation: urgency-pulse 2.8s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ── LENIS SMOOTH SCROLL ─────────────────────────────────── */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ── SECTION TITLE — PREMIUM REVEAL ─────────────────────── */
+/* opacity: 0 + background-clip: text = Chrome não renderiza o gradient.
+   Fix: manter opacity:1 sempre, revelar só com blur + translateY */
+.section-title.reveal {
+  opacity: 1;
+  transform: translateY(56px);
+  filter: blur(8px);
+  transition:
+    transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-title.reveal.in-view {
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* ── SECTION ENTRY SWEEP LINE ────────────────────────────── */
+section {
+  position: relative;
+}
+
+section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 40%,
+    var(--accent) 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+section.section-entered::after {
+  animation: section-sweep 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes section-sweep {
+  0%   { transform: scaleX(0); opacity: 0.8; transform-origin: left center; }
+  60%  { transform: scaleX(1); opacity: 0.8; transform-origin: left center; }
+  100% { transform: scaleX(1); opacity: 0;   transform-origin: left center; }
+}
+
+/* ── COCKPIT LINE DRAW ───────────────────────────────────── */
+/* Base state handled via inline style (pathLength + strokeDashoffset) */
+/* The CSS transition below applies only to non-draw properties */
+.cockpit-svg path.cockpit-line {
+  fill: none;
+}
+
+/* ── CURSOR RING — remove CSS transform transition (spring handles it) ── */
+.cursor-ring {
+  transition:
+    width 0.28s ease,
+    height 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease;
+}
+
+/* ── STAGGER UPGRADE — section eyebrow delays ────────────── */
+.section-eyebrow.reveal { transition-delay: 0s; }
+.section-title.reveal   { transition-delay: 0.08s; }
+.section-subtitle.reveal { transition-delay: 0.2s; }
+
+/* ── ENHANCED AMBIENT ────────────────────────────────────── */
+.cursor-ambient { transition: background 0.12s ease; }
+
+/* ── SHINE ON HOVER FOR PROJECT CARDS ────────────────────── */
+.project-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    rgba(198, 244, 50, 0.04) 50%,
+    transparent 75%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.project-card:hover::after {
+  opacity: 1;
+}
+
+/* ── ACTIVE NAV LINK GLOW ────────────────────────────────── */
+.header-nav a.active {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(198, 244, 50, 0.5);
+}
+
+/* ── STATS COUNTER FONT FEATURE ──────────────────────────── */
+.stats-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}

@@ -2,9 +2,10 @@
 
 import type { ChangeEvent, CSSProperties, FormEvent, MouseEvent as ReactMouseEvent } from "react";
 import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
 import { LexorHeroAnimation } from "./lexor-hero-animation";
 
-const WHATSAPP_NUMBER = "5500000000000";
+const WHATSAPP_NUMBER = "5511975895183";
 
 const navItems = [
   { label: "Sistema", href: "#sistema" },
@@ -14,13 +15,12 @@ const navItems = [
   { label: "Diagnóstico", href: "#mapa" },
 ];
 
-const painPoints = [
-  "Leads se perdem.",
-  "O atendimento atrasa.",
-  "O follow-up falha.",
-  "A equipe fica sobrecarregada.",
-  "Os dados ficam espalhados.",
-  "Decisões viram aposta.",
+const agentRows = [
+  { human: "Trabalha 8h por dia", agent: "Trabalha 24h por dia" },
+  { human: "Esquece do follow-up", agent: "Nunca esquece nada" },
+  { human: "Custa mais à medida que cresce", agent: "Fica mais barato com escala" },
+  { human: "Precisa de treinamento constante", agent: "Aprende com cada conversa" },
+  { human: "Sai de férias, pede demissão", agent: "Disponível sempre" },
 ];
 
 const cockpitNodes = [
@@ -47,33 +47,33 @@ const cockpitLinks = [
 
 const systemChapters = [
   {
-    label: "01 / PRESENÇA",
-    title: "A demanda encontra a sua empresa.",
-    desc: "Site, posicionamento e busca preparados para capturar intenção real.",
+    label: "01 / AGENTE DE ATRAÇÃO",
+    title: "Sua empresa encontra quem está procurando.",
+    desc: "Site, posicionamento e busca capturando intenção real de compra.",
     nodes: ["site", "google", "marketing"],
   },
   {
-    label: "02 / AQUISIÇÃO",
-    title: "O funil transforma atenção em movimento.",
-    desc: "Campanhas e jornadas conduzem o interesse até a conversa comercial.",
+    label: "02 / AGENTE DE CAPTURA",
+    title: "Transforma interesse em conversa comercial.",
+    desc: "Campanhas e funis conduzindo o lead qualificado até a decisão.",
     nodes: ["marketing", "dados", "crm"],
   },
   {
-    label: "03 / IA ATENDENDO",
-    title: "A IA responde, qualifica e faz follow-up.",
-    desc: "Agentes reduzem espera, mantêm cadência e liberam a equipe.",
+    label: "03 / AGENTE DE CONVERSA",
+    title: "Responde, qualifica e agenda. 24h, sem falha.",
+    desc: "IA treinada no seu negócio respondendo, qualificando e mantendo cadência de follow-up.",
     nodes: ["ia", "crm", "automacao"],
   },
   {
-    label: "04 / OPERAÇÃO",
-    title: "A operação deixa de depender do manual.",
-    desc: "Apps, CRMs e automações conectam etapas, dados e responsáveis.",
+    label: "04 / AGENTE DE OPERAÇÃO",
+    title: "Conecta, organiza e executa sem manual.",
+    desc: "Apps próprios, CRMs e automações conectando etapas, dados e responsáveis.",
     nodes: ["app", "crm", "automacao"],
   },
   {
-    label: "05 / OTIMIZAÇÃO",
-    title: "Dados mostram o próximo movimento.",
-    desc: "Sinais viram clareza sobre onde ajustar, priorizar e crescer.",
+    label: "05 / AGENTE DE INTELIGÊNCIA",
+    title: "Lê os dados e indica o próximo passo.",
+    desc: "Sinais reais viram clareza sobre onde ajustar, priorizar e crescer.",
     nodes: ["dados", "google", "ia"],
   },
 ];
@@ -108,40 +108,40 @@ const projectSignals: Record<string, { primary: string; secondary: string }> = {
 const modules = [
   {
     eyebrow: "01 / AQUISIÇÃO",
-    title: "Funis e Tráfego",
-    desc: "Campanhas e jornadas para atrair demanda qualificada.",
-    signal: "Demanda entrando",
-    metric: "Leads qualificados",
+    title: "Agente de Atração",
+    desc: "Campanhas, funis e busca para trazer quem tem intenção real de comprar.",
+    signal: "Demanda qualificada",
+    metric: "Leads com intenção",
     type: "growth",
   },
   {
-    eyebrow: "02 / ATENDIMENTO IA",
-    title: "Agentes Conversacionais",
-    desc: "IA para responder, qualificar e manter follow-up.",
-    signal: "Resposta ativa",
-    metric: "Tempo de espera menor",
+    eyebrow: "02 / TIMES DE AGENTES IA",
+    title: "Time de Agentes de Conversa",
+    desc: "Agentes treinados no seu produto para responder, qualificar e agendar no WhatsApp — sem espera, sem falha de follow-up.",
+    signal: "Agente ativo 24h",
+    metric: "0 leads sem resposta",
     type: "chat",
   },
   {
     eyebrow: "03 / OPERAÇÃO DIGITAL",
-    title: "Operação Digital",
-    desc: "Apps, CRMs e automações para organizar processos e dados.",
+    title: "Agente de Operação",
+    desc: "Sistemas próprios, CRMs e automações que conectam dados, etapas e responsáveis sem planilha ou manual.",
     signal: "Processos conectados",
     metric: "Menos tarefa manual",
     type: "ops",
   },
   {
     eyebrow: "04 / PRESENÇA PREMIUM",
-    title: "Sites e Experiências",
-    desc: "Experiências digitais para aumentar autoridade e conversão.",
+    title: "Sistema de Presença",
+    desc: "Sites e experiências digitais que posicionam, convencem e convertem antes de qualquer conversa.",
     signal: "Autoridade visível",
     metric: "Conversão assistida",
     type: "site",
   },
   {
     eyebrow: "05 / BUSCA & REPUTAÇÃO",
-    title: "Busca · SEO · Ads",
-    desc: "Busca, SEO local e presença para captar intenção de compra.",
+    title: "Agente de Busca",
+    desc: "Presença no Google para captar quem já está procurando o que você vende.",
     signal: "Intenção capturada",
     metric: "Busca em movimento",
     type: "search",
@@ -154,6 +154,8 @@ const projects = [
     name: "Logística digital com IA",
     desc: "De rotina manual para logística digital com rastreamento e comprovantes organizados por IA.",
     tags: ["Sistema", "Logística", "IA Operacional"],
+    result: "Comprovantes organizados por IA — sem digitação manual",
+    ownSystem: true,
     type: "logistics",
   },
   {
@@ -161,6 +163,8 @@ const projects = [
     name: "App de jornada fitness",
     desc: "De consultoria fitness para produto mobile com jornada guiada.",
     tags: ["App Mobile", "Fitness", "Produto Digital"],
+    result: "De consultoria para produto digital com jornada guiada",
+    ownSystem: true,
     type: "mobile",
   },
   {
@@ -168,6 +172,8 @@ const projects = [
     name: "IA no WhatsApp",
     desc: "De atendimento reativo para captação, qualificação e agendamento com IA.",
     tags: ["IA WhatsApp", "CRM", "Educação"],
+    result: "Atendimento e agendamento com IA — resposta em segundos",
+    ownSystem: false,
     type: "chat",
   },
   {
@@ -175,6 +181,8 @@ const projects = [
     name: "Funil digital para creator",
     desc: "De conhecimento especialista para funil, posicionamento e vendas assistidas.",
     tags: ["Funil", "UGC", "Infoproduto"],
+    result: "Funil e posicionamento rodando para creator",
+    ownSystem: false,
     type: "funnel",
   },
   {
@@ -182,6 +190,8 @@ const projects = [
     name: "SaaS com agentes de IA",
     desc: "De tarefas manuais de UGC para agentes especializados em um app próprio.",
     tags: ["SaaS", "Agentes IA", "UGC"],
+    result: "Tarefas de UGC automatizadas por agentes especializados",
+    ownSystem: true,
     type: "saas",
   },
   {
@@ -189,6 +199,8 @@ const projects = [
     name: "Pedidos automatizados",
     desc: "De WhatsApp manual para pedidos, dúvidas e vendas automatizadas.",
     tags: ["WhatsApp", "Delivery", "Atendimento IA"],
+    result: "Pedidos e atendimento 24h sem operador humano",
+    ownSystem: false,
     type: "delivery",
   },
 ];
@@ -198,21 +210,25 @@ const methodSteps = [
     title: "Diagnosticar",
     num: "01 / DIAGNOSTICAR",
     desc: "Mapeamos gargalos de vendas, atendimento, operação e presença digital.",
+    detail: "Antes de propor qualquer agente ou sistema.",
   },
   {
     title: "Desenhar",
     num: "02 / DESENHAR",
     desc: "Definimos a arquitetura: site, app, funil, agente, CRM, automação ou busca.",
+    detail: "Cada empresa tem uma combinação diferente. Não existe solução padrão aqui.",
   },
   {
     title: "Construir",
     num: "03 / CONSTRUIR",
     desc: "Criamos os ativos que colocam a operação em movimento.",
+    detail: "Você acompanha. Entregamos em sprints, não em promessas.",
   },
   {
     title: "Otimizar",
     num: "04 / OTIMIZAR",
     desc: "Medimos, ajustamos e evoluímos com dados reais.",
+    detail: "Com os dados da sua operação — não de benchmarks genéricos do setor.",
   },
 ];
 
@@ -267,8 +283,8 @@ const challengeOptions = [
   "Operação",
   "Google",
   "Automação",
-  "IA",
-  "Sistema ou app",
+  "Agentes de IA / Automação",
+  "Sistema ou app próprio",
   "Ainda não sei",
 ];
 
@@ -385,7 +401,14 @@ export function LexorExperience() {
     const sections = document.querySelectorAll<HTMLElement>("section[id]");
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) setActiveSection(e.target.id); });
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setActiveSection(e.target.id);
+            if (!e.target.classList.contains("section-entered")) {
+              e.target.classList.add("section-entered");
+            }
+          }
+        });
       },
       { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
     );
@@ -410,18 +433,40 @@ export function LexorExperience() {
   }, []);
 
   useEffect(() => {
+    if (!loaderHidden) return;
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+    let rafId: number;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = window.requestAnimationFrame(raf);
+    };
+    rafId = window.requestAnimationFrame(raf);
+    return () => {
+      lenis.destroy();
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [loaderHidden]);
+
+  useEffect(() => {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     if (coarse) return;
     const buttons = document.querySelectorAll<HTMLElement>(".btn-primary, .btn-secondary, .header-cta");
     const onMove = (e: MouseEvent) => {
       const btn = e.currentTarget as HTMLElement;
+      btn.style.transition = "transform 0.08s linear";
       const rect = btn.getBoundingClientRect();
-      const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.3;
-      const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.3;
+      const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.38;
+      const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.38;
       btn.style.transform = `translate(${dx}px, ${dy}px)`;
     };
     const onLeave = (e: MouseEvent) => {
-      (e.currentTarget as HTMLElement).style.transform = "";
+      const btn = e.currentTarget as HTMLElement;
+      btn.style.transition = "transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1)";
+      btn.style.transform = "";
+      window.setTimeout(() => { btn.style.transition = ""; }, 560);
     };
     buttons.forEach((btn) => {
       btn.addEventListener("mousemove", onMove);
@@ -448,6 +493,8 @@ export function LexorExperience() {
     let mouseY = 0;
     let ringX = 0;
     let ringY = 0;
+    let velX = 0;
+    let velY = 0;
     let ambX = -600;
     let ambY = -600;
     let frame = 0;
@@ -466,14 +513,17 @@ export function LexorExperience() {
     };
 
     const loop = () => {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      ambX += (mouseX - ambX) * 0.06;
-      ambY += (mouseY - ambY) * 0.06;
+      // Spring physics: stiffness 0.11, damping 0.78 — produces slight overshoot
+      velX = (velX + (mouseX - ringX) * 0.11) * 0.78;
+      velY = (velY + (mouseY - ringY) * 0.11) * 0.78;
+      ringX += velX;
+      ringY += velY;
+      ambX += (mouseX - ambX) * 0.055;
+      ambY += (mouseY - ambY) * 0.055;
       ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
       label.style.transform = `translate(${ringX}px, ${ringY + 48}px) translate(-50%, -50%)`;
       if (ambientRef.current) {
-        ambientRef.current.style.background = `radial-gradient(600px circle at ${ambX}px ${ambY}px, rgba(198,244,50,0.045), transparent 40%)`;
+        ambientRef.current.style.background = `radial-gradient(700px circle at ${ambX}px ${ambY}px, rgba(198,244,50,0.05), transparent 40%)`;
       }
       frame = window.requestAnimationFrame(loop);
     };
@@ -614,8 +664,10 @@ export function LexorExperience() {
           <ManifestoSection />
           <ProblemSection />
           <SystemSection activeIndex={activeSystemIndex} progress={systemProgress} />
+          <AgentsSection />
           <ModulesSection onCardMove={handleCardMove} onCardLeave={handleCardLeave} />
           <ProjectsSection onCardMove={handleCardMove} onCardLeave={handleCardLeave} />
+          <StatsSection />
           <MethodSection activeIndex={activeMethodIndex} progress={methodProgress} />
           <QualificationSection />
           <MapSection onSubmit={submitForm} submitted={submitted} />
@@ -633,20 +685,23 @@ function ManifestoSection() {
       <div className="site-container">
         <div className="section-eyebrow reveal">01 · MANIFESTO</div>
         <h2 className="section-title reveal">
-          Crescer não deveria
+          Sua empresa não
           <br />
-          consumir sua
+          devia precisar de
           <br />
-          operação.
+          você para funcionar.
         </h2>
         <p className="manifesto-text reveal">
-          A Lexor cria estruturas digitais que atraem, atendem, vendem e
-          automatizam. Menos improviso. Mais inteligência operacional.
+          A Lexor monta o time digital que atrai, responde, qualifica e
+          organiza — enquanto você faz o que só você pode fazer.
         </p>
         <p className="manifesto-impact reveal">
-          Quando tudo depende de pessoas lembrando, cobrando e conferindo, a
-          empresa cresce no esforço. Quando tudo vira sistema, ela cresce com
-          controle.
+          Quando tudo depende de alguém lembrar, cobrar e conferir, o
+          crescimento custa esforço. Quando tudo vira sistema, ele custa
+          inteligência.
+        </p>
+        <p className="manifesto-tag reveal">
+          Não é automação. É uma equipe. Sem folha de pagamento crescendo.
         </p>
       </div>
     </section>
@@ -672,14 +727,30 @@ function ProblemSection() {
               até existem. O problema é que quase nada conversa.
             </p>
             <p className="problem-accent reveal">
-              A Lexor transforma peças soltas em uma operação conectada.
+              A Lexor fecha os buracos. Com agentes que não esquecem, sistemas
+              que conectam e dados que mostram onde melhorar.
             </p>
           </div>
-          <ul className="problem-list reveal">
-            {painPoints.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+          <div className="problem-list reveal">
+            <p className="problem-narrative">
+              O lead entra. Ninguém responde rápido.
+              <br />
+              Quando respondem, ele já foi embora.
+              <br />
+              O follow-up? Ficou no &ldquo;vou mandar amanhã&rdquo;.
+              <br />
+              A venda vazou sem que ninguém percebesse.
+              <br />
+              E os dados pra entender onde foi?
+              <br />
+              Espalhados em cinco ferramentas que não conversam.
+            </p>
+            <p className="problem-urgency">
+              Enquanto você lê isso, empresas no seu mercado já operam com
+              agentes de IA no atendimento. A janela de vantagem existe —
+              mas fecha.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -689,6 +760,19 @@ function ProblemSection() {
 function SystemSection({ activeIndex, progress }: { activeIndex: number; progress: number }) {
   const activeChapter = systemChapters[activeIndex] ?? systemChapters[0];
   const activeNodes = new Set(activeChapter.nodes);
+  const cockpitRef = useRef<HTMLDivElement>(null);
+  const [drawn, setDrawn] = useState(false);
+
+  useEffect(() => {
+    const el = cockpitRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setDrawn(true); obs.disconnect(); } },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section id="sistema" className="system-scroll">
@@ -700,8 +784,8 @@ function SystemSection({ activeIndex, progress }: { activeIndex: number; progres
           Crescimento Lexor™
         </h2>
         <p className="section-subtitle reveal">
-          Uma arquitetura digital para transformar marketing, vendas,
-          atendimento e operação em um sistema único.
+          Cinco agentes especializados. Uma operação conectada. Zero
+          dependência de você estar presente.
         </p>
       </div>
 
@@ -717,21 +801,24 @@ function SystemSection({ activeIndex, progress }: { activeIndex: number; progres
               <p>{activeChapter.desc}</p>
             </div>
 
-            <div className="cockpit">
+            <div className="cockpit" ref={cockpitRef}>
               <svg className="cockpit-svg" viewBox="0 0 1100 800" preserveAspectRatio="xMidYMid meet">
                 <circle className="cockpit-line" cx="550" cy="400" r="140" />
                 <circle className="cockpit-line" cx="550" cy="400" r="240" />
                 <circle className="cockpit-line" cx="550" cy="400" r="340" />
                 <circle className="cockpit-center-ring" cx="550" cy="400" r="80" />
 
-                {cockpitLinks.map((link) => (
-                  <line
+                {cockpitLinks.map((link, index) => (
+                  <path
                     key={link.key}
+                    d={`M 550 400 L ${link.x} ${link.y}`}
+                    pathLength="1"
                     className={`cockpit-line ${activeNodes.has(link.key) ? "link-active" : ""}`}
-                    x1="550"
-                    y1="400"
-                    x2={link.x}
-                    y2={link.y}
+                    style={{
+                      strokeDasharray: 1,
+                      strokeDashoffset: drawn ? 0 : 1,
+                      transition: `stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.09}s, stroke 0.3s ease, opacity 0.3s ease`,
+                    } as CSSProperties}
                   />
                 ))}
 
@@ -795,9 +882,8 @@ function SystemSection({ activeIndex, progress }: { activeIndex: number; progres
 
       <div className="site-container">
         <p className="system-phrase reveal">
-          Marketing atrai. IA atende. Sistema organiza.
-          <br />
-          Google posiciona. <span>Dados mostram o próximo movimento.</span>
+          Cinco agentes. Uma operação.{" "}
+          <span>Trabalhando enquanto você dorme.</span>
         </p>
       </div>
     </section>
@@ -819,14 +905,17 @@ function ModulesSection({
           <div>
             <div className="section-eyebrow reveal">04 · MÓDULOS</div>
             <h2 className="section-title reveal">
-              Os módulos do
+              Cada módulo é
               <br />
-              seu crescimento.
+              um agente. Cada
+              <br />
+              agente, um problema
+              <br />
+              resolvido.
             </h2>
             <p className="section-subtitle modules-copy reveal">
-              Cada frente entra como uma camada do mesmo sistema: atração,
-              atendimento, operação, presença e dados puxando a empresa na
-              mesma direção.
+              Você escolhe os agentes que o seu negócio precisa agora. Depois,
+              eles se conectam — e a operação passa a rodar sozinha.
             </p>
           </div>
 
@@ -922,7 +1011,11 @@ function ProjectsSection({
           <div className="project-num">{project.num}</div>
           <h3 className="project-name">{project.name}</h3>
           <p className="project-desc">{project.desc}</p>
+          <p className="project-result">↳ {project.result}</p>
           <div className="project-tags">
+            {project.ownSystem && (
+              <span className="project-tag project-tag-own">Sistema Próprio</span>
+            )}
             {project.tags.map((tag) => (
               <span key={tag} className="project-tag">
                 {tag}
@@ -961,6 +1054,100 @@ function ProjectsSection({
   );
 }
 
+function AgentsSection() {
+  return (
+    <section id="agentes" className="agents-section section-muted">
+      <div className="site-container">
+        <div className="section-eyebrow reveal">03.5 · TIMES DE AGENTES</div>
+        <h2 className="section-title reveal">
+          Você não precisa
+          <br />
+          contratar mais pessoas.
+          <br />
+          Precisa dos agentes certos.
+        </h2>
+        <p className="section-subtitle reveal">
+          A Lexor constrói times de agentes de IA especializados no seu
+          negócio — configurados para o seu produto, seu cliente e seu processo
+          de venda.
+        </p>
+
+        <div className="agents-table reveal" role="table" aria-label="Comparativo time humano vs agentes Lexor">
+          <div className="agents-table-head" role="row">
+            <div role="columnheader" className="agents-col-human">TIME HUMANO</div>
+            <div role="columnheader" className="agents-col-agent">TIME DE AGENTES LEXOR</div>
+          </div>
+          {agentRows.map((row) => (
+            <div key={row.human} className="agents-table-row" role="row">
+              <div role="cell" className="agents-col-human">{row.human}</div>
+              <div role="cell" className="agents-col-agent">
+                <span className="agents-check">✓</span> {row.agent}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="agents-cta reveal">
+          <a href="#mapa" className="btn-primary ripple-target">
+            Ver como funciona um time de agentes →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatsSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const fired = useRef(false);
+  const [counts, setCounts] = useState({ a: 0, b: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !fired.current) {
+          fired.current = true;
+          const dur = 1600;
+          const start = performance.now();
+          const tick = () => {
+            const t = Math.min((performance.now() - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            setCounts({ a: Math.round(eased * 6), b: Math.round(eased * 5) });
+            if (t < 1) window.requestAnimationFrame(tick);
+          };
+          window.requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="stats-strip" aria-label="Números Lexor">
+      <div className="site-container stats-inner">
+        <div className="stats-item">
+          <span className="stats-num">{counts.a}+</span>
+          <span className="stats-label">projetos com sistemas próprios</span>
+        </div>
+        <span className="stats-sep" aria-hidden="true">·</span>
+        <div className="stats-item">
+          <span className="stats-num">{counts.b}</span>
+          <span className="stats-label">tipos de agentes de IA</span>
+        </div>
+        <span className="stats-sep" aria-hidden="true">·</span>
+        <div className="stats-item">
+          <span className="stats-num">24h</span>
+          <span className="stats-label">operação sem depender de você</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MethodSection({ activeIndex, progress }: { activeIndex: number; progress: number }) {
   return (
     <section id="metodo" className="section-muted">
@@ -982,6 +1169,7 @@ function MethodSection({ activeIndex, progress }: { activeIndex: number; progres
               <div className="method-num">{step.num}</div>
               <h3 className="method-title">{step.title}</h3>
               <p className="method-desc">{step.desc}</p>
+              <p className="method-detail">{step.detail}</p>
             </div>
           ))}
         </div>
@@ -1012,9 +1200,13 @@ function QualificationSection() {
         </div>
 
         <div className="qual-closing reveal">
-          Se você quer apenas uma peça solta, talvez existam opções mais baratas.
+          Quem quer uma ferramenta solta tem mil opções.
           <br />
-          Se você quer construir uma operação conectada, a Lexor entra.
+          Quem quer um time de agentes de IA operando pela sua empresa —
+          esse é o nosso trabalho.
+          <br />
+          E o momento certo é agora: cada mês de espera é um mês em que o
+          concorrente está treinando os agentes que você não tem.
         </div>
       </div>
     </section>
@@ -1068,9 +1260,9 @@ function MapSection({
           <span>Não com achismo.</span>
         </h2>
         <p className="section-subtitle reveal">
-          No Mapa de Crescimento Lexor, identificamos onde sua operação perde
-          tempo, leads e vendas. Depois, desenhamos a arquitetura ideal para
-          conectar marketing, IA, automação, sistemas e busca.
+          Em uma sessão estratégica, identificamos exatamente onde sua operação
+          perde leads e tempo. Depois, desenhamos o time de agentes ideal para
+          o seu negócio.
         </p>
 
         <div className="mapa-grid">
@@ -1100,7 +1292,7 @@ function MapSection({
                   Quero meu Mapa de Crescimento →
                 </button>
                 <div className="form-note">
-                  Diagnóstico estratégico gratuito para empresas em operação.
+                  Diagnóstico gratuito · Feito para empresas em operação · Sem pitch de produtos
                 </div>
               </>
             ) : (
@@ -1182,7 +1374,7 @@ function Footer() {
       <div className="site-container">
         <h2 className="footer-logo">LEXOR</h2>
         <p className="footer-tagline">
-          Vendemos tempo. Construímos operações conectadas ao futuro.
+          Devolvemos seu tempo. Montamos o time digital que trabalha por você.
         </p>
 
         <div className="footer-grid">
